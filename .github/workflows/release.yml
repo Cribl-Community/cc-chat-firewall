@@ -1,0 +1,62 @@
+# Builds the Cribl app package and publishes it as a GitHub Release when a version tag is pushed.
+#
+#   git tag v1.2.3 && git push origin v1.2.3
+#
+# The tag sets the package version (v1.2.3 -> 1.2.3), so package.json doesn't need a matching bump.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Read version from tag
+        id: version
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Tag $GITHUB_REF_NAME is not in vX.Y.Z form"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      # `apps package` runs the full build (type-check, Vite, backend bundles) before packing.
+      - name: Build and package
+        run: npm run package -- --version "${{ steps.version.outputs.version }}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            build/*-"${{ steps.version.outputs.version }}".tgz \
+            --title "Chat Firewall $GITHUB_REF_NAME" \
+            --generate-notes \
+            --verify-tag
