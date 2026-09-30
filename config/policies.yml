@@ -1,0 +1,9 @@
+# Product API access declaration. These grants apply app-wide, to both the frontend and every
+# backend endpoint.
+
+policies:
+  # Cribl Search: run a job over the firewall logs and read its results.
+  - object: '/m/:gid/search/jobs'
+    actions: ['POST']
+  - object: '/m/:gid/search/jobs/*'
+    actions: ['GET']

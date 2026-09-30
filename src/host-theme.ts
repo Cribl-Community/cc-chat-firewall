@@ -1,0 +1,32 @@
+export type HostTheme = 'light' | 'dark';
+
+/** Applies the Cribl shell's theme to this document. Returns a teardown fn. */
+export function installThemeBridge(onTheme?: (theme: HostTheme) => void): () => void {
+  const onMessage = (event: MessageEvent) => {
+    if (event.source !== window.parent) return; // any frame can post to yours
+    const data = event.data as { type?: string; theme?: HostTheme } | null;
+    if (data?.type !== 'CRIBL_APP_LAYOUT') return;
+    if (data.theme !== 'light' && data.theme !== 'dark') return;
+    document.body.classList.toggle('dark', data.theme === 'dark');
+    onTheme?.(data.theme);
+  };
+
+  window.addEventListener('message', onMessage);
+  return () => window.removeEventListener('message', onMessage);
+}
+
+let current: HostTheme = window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+const listeners = new Set<(t: HostTheme) => void>();
+
+/** Latest theme pushed by the host, for components (e.g. EmptyState illustrations) that need it. */
+export const themeStore = {
+  get: () => current,
+  subscribe(fn: (t: HostTheme) => void) {
+    listeners.add(fn);
+    return () => listeners.delete(fn);
+  },
+  set(t: HostTheme) {
+    current = t;
+    listeners.forEach((fn) => fn(t));
+  },
+};

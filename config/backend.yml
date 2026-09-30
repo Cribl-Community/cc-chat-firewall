@@ -1,0 +1,16 @@
+# Backend endpoint declaration. Each endpoint is an HTTP handler that runs on the Cribl platform.
+#
+# Endpoint permissions are NOT declared here. Cribl API access lives in `config/policies.yml`
+# and external egress in `config/proxies.yml`; both apply app-wide across every endpoint.
+
+runtime: js
+
+endpoints:
+  - name: tick
+    script: backend/tick.ts
+    description: "Scheduled every minute: answers WhatsApp commands, expires temporary allows, sends activity summaries, and publishes the firewall lists to S3"
+    timeout: 150
+  - name: action
+    script: backend/action.ts
+    description: "Operations started from the app UI: allow/deny a site, send a test message, run a check now, publish lists"
+    timeout: 150

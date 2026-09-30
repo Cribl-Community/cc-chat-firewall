@@ -1,0 +1,9 @@
+# Scheduled backend functions (platform Schedule API). The platform POSTs a JSON body to the named
+# endpoint's `onRequest` at fire time. Top-level keys are schedule ids; cron is five-field UTC.
+
+# Every minute: poll WhatsApp replies, expire temporary allows, and send a summary when one is due
+# (the summary interval itself is configured in the app's Settings page).
+tick:
+  endpoint: tick
+  cronSchedule: '* * * * *'
+  bodyExpression: '{ scheduleId, scheduledFor }'

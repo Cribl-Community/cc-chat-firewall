@@ -1,0 +1,19 @@
+# External API declaration. Declare domains your app needs to reach.
+# At install time, admins see exactly which endpoints the app will use.
+
+# Twilio WhatsApp API: send summaries and read replies. The Basic auth header is built from the
+# KV key `twilio_basic` (base64 of "AccountSid:AuthToken"), written by the Settings page.
+api.twilio.com:
+  timeout: 20000
+  paths:
+    allowlist:
+      - /2010-04-01/Accounts/
+  headers:
+    inject:
+      Authorization: "'Basic ' + kv.twilio_basic"
+
+# S3 bucket holding the PA-410 External Dynamic Lists (path-style URLs). Uploads are presigned
+# (SigV4 in the query string), so no auth header is injected here.
+# IMPORTANT: the region in this domain must match the bucket's region in Settings.
+s3.us-east-1.amazonaws.com:
+  timeout: 20000

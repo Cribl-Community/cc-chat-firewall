@@ -1,0 +1,163 @@
+:root {
+  color-scheme: light dark;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: token('color.background.application');
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  height: 100vh;
+}
+
+.app-nav {
+  height: 100vh;
+}
+
+.app-main {
+  overflow-y: auto;
+  padding-block-end: token('spacing.2xl');
+}
+
+/* Page header stays fixed at the top of the main content while it scrolls. */
+.page-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: token('spacing.md');
+  padding: token('spacing.lg') token('spacing.lg') 0;
+  margin-block-end: token('spacing.lg');
+  background-color: token('color.background.application');
+  border-block-end: token('border.default');
+}
+
+.page-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: token('spacing.lg');
+  padding-block-end: token('spacing.md');
+}
+
+.page-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: token('spacing.xs');
+}
+
+.page-header-actions {
+  display: flex;
+  gap: token('spacing.sm');
+  flex-shrink: 0;
+}
+
+/* Capra 12-column grid: 12 fluid columns, 16px gutters, 16px inline padding. */
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: token('spacing.lg');
+  padding-inline: token('spacing.lg');
+}
+
+.span-3 {
+  grid-column: span 3;
+}
+
+.span-8 {
+  grid-column: span 8;
+}
+
+.span-12 {
+  grid-column: span 12;
+}
+
+@media (max-width: 900px) {
+  .span-3 {
+    grid-column: span 6;
+  }
+
+  .span-8 {
+    grid-column: span 12;
+  }
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: token('spacing.md');
+}
+
+.stack-lg {
+  display: flex;
+  flex-direction: column;
+  gap: token('spacing.2xl');
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: token('spacing.xs');
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: token('spacing.md');
+}
+
+.toolbar-filter {
+  min-width: 12rem;
+}
+
+.row-actions {
+  display: flex;
+  gap: token('spacing.sm');
+  justify-content: flex-end;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: token('spacing.md');
+}
+
+.inline-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: token('spacing.sm');
+}
+
+/* Aligns the Generate button with the input rather than its label. */
+.inline-field > :last-child {
+  margin-block-start: token('spacing.xl');
+}
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: token('spacing.sm');
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: token('spacing.sm');
+  padding-inline-start: token('spacing.xl');
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  gap: token('spacing.sm');
+}
